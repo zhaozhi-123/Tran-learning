@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线投票系统</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 导航栏 */
+        nav {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .nav-links a.active {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        /* 页面内容 */
+        .page {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 标题样式 */
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* 选项列表 */
+        .options-list {
+            margin: 20px 0;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .option-item input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .option-item button {
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option-item button:hover {
+            background-color: #c0392b;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #229954;
+        }
+
+        /* 投票列表 */
+        .polls-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .poll-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .poll-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .poll-card h3 {
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .poll-card p {
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .poll-card .options-count {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .poll-card .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* 投票详情 */
+        .poll-detail {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .poll-info {
+            margin-bottom: 30px;
+        }
+
+        .poll-options {
+            margin: 20px 0;
+        }
+
+        .poll-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .poll-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        .poll-option input[type="radio"],
+        .poll-option input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        .poll-option label {
+            flex: 1;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        /* 结果展示 */
+        .results-container {
+            margin: 30px 0;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+        }
+
+        .result-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .result-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .result-fill {
+            height: 100%;
+            background-color: #3498db;
+            transition: width 1s ease-in-out;
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            margin: 30px 0;
+            height: 300px;
+            position: relative;
+        }
+
+        /* 消息提示 */
+        .message {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .page {
+                padding: 20px;
+            }
+
+            .polls-list {
+                grid-template-columns: 1fr;
+            }
+
+            .poll-card .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(52, 152, 219, 0.3);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-title">在线投票系统</div>
+            <div class="nav-links">
+                <a href="#" data-page="create">创建投票</a>
+                <a href="#" data-page="participate">参与投票</a>
+                <a href="#" data-page="results">查看结果</a>
+                <a href="#" data-page="manage">管理投票</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 创建投票页面 -->
+        <div class="page" id="create">
+            <h1>创建投票</h1>
+            <form id="create-poll-form">
+                <div class="form-group">
+                    <label for="poll-title">投票标题 *</label>
+                    <input type="text" id="poll-title" required placeholder="请输入投票标题">
+                </div>
+                <div class="form-group">
+                    <label for="poll-description">投票描述</label>
+                    <textarea id="poll-description" placeholder="请输入投票描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>投票模式</label>
+                    <div style="display: flex; gap: 20px; margin-top: 10px;">
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="poll-mode" value="single" checked>
+                            单选
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="poll-mode" value="multiple">
+                            多选
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>投票选项 *</label>
+                    <div class="options-list" id="options-list">
+                        <div class="option-item">
+                            <input type="text" placeholder="选项 1" required>
+                            <button type="button" class="remove-option">删除</button>
+                        </div>
+                        <div class="option-item">
+                            <input type="text" placeholder="选项 2" required>
+                            <button type="button" class="remove-option">删除</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="add-option">添加选项</button>
+                </div>
+                <button type="submit" class="btn btn-primary">创建投票</button>
+            </form>
+        </div>
+
+        <!-- 参与投票页面 -->
+        <div class="page" id="participate">
+            <h1>参与投票</h1>
+            <div id="participate-polls" class="polls-list"></div>
+        </div>
+
+        <!-- 查看结果页面 -->
+        <div class="page" id="results">
+            <h1>投票结果</h1>
+            <div id="results-polls" class="polls-list"></div>
+        </div>
+
+        <!-- 管理投票页面 -->
+        <div class="page" id="manage">
+            <h1>管理投票</h1>
+            <div id="manage-polls" class="polls-list"></div>
+        </div>
+    </div>
+
+    <!-- 投票详情模态框 -->
+    <div id="poll-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 30px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <h2 id="modal-title"></h2>
+            <div id="modal-content"></div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" id="close-modal">关闭</button>
+                <button class="btn btn-primary" id="submit-vote" style="display: none;">提交投票</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模块化代码
+        const PollSystem = {
+            // 初始化
+            init() {
+                this.loadPolls();
+                this.setupEventListeners();
+                this.switchPage('create');
+            },
+
+            // 数据存储
+            polls: [],
+            userVotes: {},
+
+            // 加载投票数据
+            loadPolls() {
+                const savedPolls = localStorage.getItem('polls');
+                const savedVotes = localStorage.getItem('userVotes');
+                if (savedPolls) {
+                    this.polls = JSON.parse(savedPolls);
+                }
+                if (savedVotes) {
+                    this.userVotes = JSON.parse(savedVotes);
+                }
+            },
+
+            // 保存投票数据
+            savePolls() {
+                localStorage.setItem('polls', JSON.stringify(this.polls));
+                localStorage.setItem('userVotes', JSON.stringify(this.userVotes));
+            },
+
+            // 设置事件监听器
+            setupEventListeners() {
+                // 导航切换
+                document.querySelectorAll('.nav-links a').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = link.dataset.page;
+                        this.switchPage(page);
+                    });
+                });
+
+                // 创建投票表单
+                document.getElementById('create-poll-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createPoll();
+                });
+
+                // 添加选项
+                document.getElementById('add-option').addEventListener('click', () => {
+                    this.addOption();
+                });
+
+                // 删除选项
+                document.getElementById('options-list').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-option')) {
+                        this.removeOption(e.target);
+                    }
+                });
+
+                // 关闭模态框
+                document.getElementById('close-modal').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                // 提交投票
+                document.getElementById('submit-vote').addEventListener('click', () => {
+                    this.submitVote();
+                });
+            },
+
+            // 切换页面
+            switchPage(pageId) {
+                // 隐藏所有页面
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+
+                // 显示当前页面
+                document.getElementById(pageId).classList.add('active');
+
+                // 更新导航激活状态
+                document.querySelectorAll('.nav-links a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.page === pageId) {
+                        link.classList.add('active');
+                    }
+                });
+
+                // 加载对应页面数据
+                if (pageId === 'participate') {
+                    this.renderParticipatePolls();
+                } else if (pageId === 'results') {
+                    this.renderResultsPolls();
+                } else if (pageId === 'manage') {
+                    this.renderManagePolls();
+                }
+            },
+
+            // 添加选项
+            addOption() {
+                const optionsList = document.getElementById('options-list');
+                const optionCount = optionsList.children.length + 1;
+                const optionItem = document.createElement('div');
+                optionItem.className = 'option-item';
+                optionItem.innerHTML = `
+                    <input type="text" placeholder="选项 ${optionCount}" required>
+                    <button type="button" class="remove-option">删除</button>
+                `;
+                optionsList.appendChild(optionItem);
+            },
+
+            // 删除选项
+            removeOption(button) {
+                const optionsList = document.getElementById('options-list');
+                if (optionsList.children.length > 2) {
+                    button.parentElement.remove();
+                    // 更新选项编号
+                    Array.from(optionsList.children).forEach((item, index) => {
+                        item.querySelector('input').placeholder = `选项 ${index + 1}`;
+                    });
+                } else {
+                    alert('至少需要两个选项');
+                }
+            },
+
+            // 创建投票
+            createPoll() {
+                const title = document.getElementById('poll-title').value;
+                const description = document.getElementById('poll-description').value;
+                const mode = document.querySelector('input[name="poll-mode"]:checked').value;
+                const options = Array.from(document.querySelectorAll('#options-list input')).map(input => input.value);
+
+                // 验证输入
+                if (!title) {
+                    this.showMessage('请输入投票标题', 'error');
+                    return;
+                }
+
+                if (options.some(option => !option)) {
+                    this.showMessage('请填写所有选项', 'error');
+                    return;
+                }
+
+                // 创建投票对象
+                const poll = {
+                    id: Date.now().toString(),
+                    title,
+                    description,
+                    mode,
+                    options,
+                    votes: new Array(options.length).fill(0),
+                    createdAt: new Date().toISOString(),
+                    active: true
+                };
+
+                // 添加到投票列表
+                this.polls.push(poll);
+                this.savePolls();
+
+                // 重置表单
+                document.getElementById('create-poll-form').reset();
+                const optionsList = document.getElementById('options-list');
+                while (optionsList.children.length > 2) {
+                    optionsList.removeChild(optionsList.lastChild);
+                }
+
+                // 显示成功消息
+                this.showMessage('投票创建成功!', 'success');
+            },
+
+            // 渲染参与投票列表
+            renderParticipatePolls() {
+                const container = document.getElementById('participate-polls');
+                container.innerHTML = '';
+
+                if (this.polls.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">暂无投票</p>';
+                    return;
+                }
+
+                this.polls.forEach(poll => {
+                    if (poll.active) {
+                        const pollCard = document.createElement('div');
+                        pollCard.className = 'poll-card';
+                        pollCard.innerHTML = `
+                            <h3>${poll.title}</h3>
+                            <p>${poll.description || '无描述'}</p>
+                            <div class="options-count">${poll.options.length} 个选项</div>
+                            <div class="actions">
+                                <button class="btn btn-primary" onclick="PollSystem.openPoll('${poll.id}')">参与投票</button>
+                            </div>
+                        `;
+                        container.appendChild(pollCard);
+                    }
+                });
+            },
+
+            // 渲染结果投票列表
+            renderResultsPolls() {
+                const container = document.getElementById('results-polls');
+                container.innerHTML = '';
+
+                if (this.polls.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">暂无投票</p>';
+                    return;
+                }
+
+                this.polls.forEach(poll => {
+                    const pollCard = document.createElement('div');
+                    pollCard.className = 'poll-card';
+                    pollCard.innerHTML = `
+                        <h3>${poll.title}</h3>
+                        <p>${poll.description || '无描述'}</p>
+                        <div class="options-count">${poll.options.length} 个选项</div>
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="PollSystem.viewResults('${poll.id}')">查看结果</button>
+                        </div>
+                    `;
+                    container.appendChild(pollCard);
+                });
+            },
+
+            // 渲染管理投票列表
+            renderManagePolls() {
+                const container = document.getElementById('manage-polls');
+                container.innerHTML = '';
+
+                if (this.polls.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">暂无投票</p>';
+                    return;
+                }
+
+                this.polls.forEach(poll => {
+                    const pollCard = document.createElement('div');
+                    pollCard.className = 'poll-card';
+                    pollCard.innerHTML = `
+                        <h3>${poll.title}</h3>
+                        <p>${poll.description || '无描述'}</p>
+                        <div class="options-count">${poll.options.length} 个选项</div>
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="PollSystem.viewResults('${poll.id}')">查看结果</button>
+                            <button class="btn btn-secondary" onclick="PollSystem.togglePollStatus('${poll.id}')">${poll.active ? '关闭' : '开启'}</button>
+                            <button class="btn btn-danger" onclick="PollSystem.deletePoll('${poll.id}')">删除</button>
+                        </div>
+                    `;
+                    container.appendChild(pollCard);
+                });
+            },
+
+            // 打开投票详情
+            openPoll(pollId) {
+                const poll = this.polls.find(p => p.id === pollId);
+                if (!poll) return;
+
+                // 检查是否已投票
+                if (this.userVotes[pollId]) {
+                    this.showMessage('您已经参与过此投票', 'error');
+                    return;
+                }
+
+                // 填充模态框
+                document.getElementById('modal-title').textContent = poll.title;
+                const modalContent = document.getElementById('modal-content');
+                modalContent.innerHTML = `
+                    <p>${poll.description || '无描述'}</p>
+                    <div class="poll-options" style="margin-top: 20px;">
+                        ${poll.options.map((option, index) => `
+                            <div class="poll-option">
+                                <input type="${poll.mode === 'single' ? 'radio' : 'checkbox'}" name="vote-option" value="${index}" id="option-${index}">
+                                <label for="option-${index}">${option}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                // 显示提交按钮
+                document.getElementById('submit-vote').style.display = 'inline-block';
+                // 存储当前投票ID
+                this.currentPollId = pollId;
+                // 显示模态框
+                document.getElementById('poll-modal').style.display = 'block';
+            },
+
+            // 查看投票结果
+            viewResults(pollId) {
+                const poll = this.polls.find(p => p.id === pollId);
+                if (!poll) return;
+
+                // 计算总票数
+                const totalVotes = poll.votes.reduce((sum, count) => sum + count, 0);
+
+                // 填充模态框
+                document.getElementById('modal-title').textContent = poll.title;
+                const modalContent = document.getElementById('modal-content');
+                modalContent.innerHTML = `
+                    <p>${poll.description || '无描述'}</p>
+                    <div class="results-container" style="margin-top: 20px;">
+                        ${poll.options.map((option, index) => {
+                            const percentage = totalVotes > 0 ? Math.round((poll.votes[index] / totalVotes) * 100) : 0;
+                            return `
+                                <div class="result-item">
+                                    <div class="result-info">
+                                        <span>${option}</span>
+                                        <span>${poll.votes[index]} 票 (${percentage}%)</span>
+                                    </div>
+                                    <div class="result-bar">
+                                        <div class="result-fill" style="width: ${percentage}%"></div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div style="margin-top: 20px; font-weight: bold; text-align: right;">
+                        总票数: ${totalVotes}
+                    </div>
+                    <div class="chart-container" id="result-chart"></div>
+                `;
+
+                // 隐藏提交按钮
+                document.getElementById('submit-vote').style.display = 'none';
+                // 显示模态框
+                document.getElementById('poll-modal').style.display = 'block';
+
+                // 绘制图表
+                this.drawChart(poll);
+            },
+
+            // 绘制结果图表
+            drawChart(poll) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 540;
+                canvas.height = 250;
+                document.getElementById('result-chart').appendChild(canvas);
+
+                const ctx = canvas.getContext('2d');
+                const totalVotes = poll.votes.reduce((sum, count) => sum + count, 0);
+                const colors = ['#3498db', '#e74c3c', '#27ae60', '#f39c12', '#9b59b6', '#1abc9c'];
+
+                if (totalVotes === 0) {
+                    ctx.fillStyle = '#999';
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('暂无投票数据', canvas.width / 2, canvas.height / 2);
+                    return;
+                }
+
+                // 绘制饼图
+                let startAngle = 0;
+                poll.votes.forEach((voteCount, index) => {
+                    const sliceAngle = (voteCount / totalVotes) * 2 * Math.PI;
+                    ctx.fillStyle = colors[index % colors.length];
+                    ctx.beginPath();
+                    ctx.moveTo(125, 125);
+                    ctx.arc(125, 125, 100, startAngle, startAngle + sliceAngle);
+                    ctx.closePath();
+                    ctx.fill();
+                    startAngle += sliceAngle;
+                });
+
+                // 绘制图例
+                poll.options.forEach((option, index) => {
+                    ctx.fillStyle = colors[index % colors.length];
+                    ctx.fillRect(270, 20 + index * 30, 20, 20);
+                    ctx.fillStyle = '#333';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'left';
+                    const percentage = Math.round((poll.votes[index] / totalVotes) * 100);
+                    ctx.fillText(`${option}: ${poll.votes[index]} 票 (${percentage}%)`, 300, 35 + index * 30);
+                });
+            },
+
+            // 提交投票
+            submitVote() {
+                const pollId = this.currentPollId;
+                const poll = this.polls.find(p => p.id === pollId);
+                if (!poll) return;
+
+                const selectedOptions = [];
+                document.querySelectorAll('input[name="vote-option"]:checked').forEach(input => {
+                    selectedOptions.push(parseInt(input.value));
+                });
+
+                if (selectedOptions.length === 0) {
+                    this.showMessage('请选择至少一个选项', 'error');
+                    return;
+                }
+
+                if (poll.mode === 'single' && selectedOptions.length > 1) {
+                    this.showMessage('单选模式只能选择一个选项', 'error');
+                    return;
+                }
+
+                // 更新投票数
+                selectedOptions.forEach(index => {
+                    poll.votes[index]++;
+                });
+
+                // 记录用户投票
+                this.userVotes[pollId] = selectedOptions;
+                this.savePolls();
+
+                // 关闭模态框
+                this.closeModal();
+                // 显示成功消息
+                this.showMessage('投票成功!', 'success');
+                // 重新渲染参与投票列表
+                this.renderParticipatePolls();
+            },
+
+            // 关闭模态框
+            closeModal() {
+                document.getElementById('poll-modal').style.display = 'none';
+                document.getElementById('modal-content').innerHTML = '';
+                this.currentPollId = null;
+            },
+
+            // 切换投票状态
+            togglePollStatus(pollId) {
+                const poll = this.polls.find(p => p.id === pollId);
+                if (poll) {
+                    poll.active = !poll.active;
+                    this.savePolls();
+                    this.renderManagePolls();
+                    this.showMessage(`投票已${poll.active ? '开启' : '关闭'}`, 'success');
+                }
+            },
+
+            // 删除投票
+            deletePoll(pollId) {
+                if (confirm('确定要删除此投票吗？')) {
+                    this.polls = this.polls.filter(p => p.id !== pollId);
+                    delete this.userVotes[pollId];
+                    this.savePolls();
+                    this.renderManagePolls();
+                    this.showMessage('投票已删除', 'success');
+                }
+            },
+
+            // 显示消息
+            showMessage(text, type) {
+                // 创建消息元素
+                const message = document.createElement('div');
+                message.className = `message message-${type}`;
+                message.textContent = text;
+
+                // 添加到容器
+                const container = document.querySelector('.container');
+                container.insertBefore(message, container.firstChild);
+
+                // 3秒后移除
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            }
+        };
+
+        // 初始化系统
+        PollSystem.init();
+    </script>
+</body>
+</html>

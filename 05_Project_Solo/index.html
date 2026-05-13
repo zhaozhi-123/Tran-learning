@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大众点评</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">大众点评</div>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索商家、美食">
+                <button>搜索</button>
+            </div>
+            <div class="user-menu">
+                <button id="login-btn">登录</button>
+                <button id="register-btn">注册</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 分类导航 -->
+    <nav class="category-nav">
+        <div class="container">
+            <ul>
+                <li class="active">全部</li>
+                <li>美食</li>
+                <li>电影</li>
+                <li>酒店</li>
+                <li>休闲娱乐</li>
+                <li>外卖</li>
+                <li>丽人</li>
+                <li>购物</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 筛选栏 -->
+    <div class="filter-bar">
+        <div class="container">
+            <div class="filter-item">
+                <span>距离</span>
+                <select>
+                    <option>不限</option>
+                    <option>1km内</option>
+                    <option>3km内</option>
+                    <option>5km内</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <span>评分</span>
+                <select>
+                    <option>不限</option>
+                    <option>4.0分以上</option>
+                    <option>4.5分以上</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <span>排序</span>
+                <select>
+                    <option>默认</option>
+                    <option>距离优先</option>
+                    <option>评分优先</option>
+                    <option>人气优先</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商家列表 -->
+    <main class="main">
+        <div class="container">
+            <div class="merchant-list" id="merchant-list">
+                <!-- 商家卡片将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 登录弹窗 -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <h2>登录</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit">登录</button>
+            </form>
+            <button class="close-btn">关闭</button>
+        </div>
+    </div>
+
+    <!-- 注册弹窗 -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <h2>注册</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit">注册</button>
+            </form>
+            <button class="close-btn">关闭</button>
+        </div>
+    </div>
+
+    <!-- 商家详情弹窗 -->
+    <div class="modal" id="merchant-modal">
+        <div class="modal-content merchant-detail">
+            <h2 id="merchant-name"></h2>
+            <div class="merchant-info">
+                <div class="rating">评分: <span id="merchant-rating"></span></div>
+                <div class="address">地址: <span id="merchant-address"></span></div>
+                <div class="phone">电话: <span id="merchant-phone"></span></div>
+                <div class="tags" id="merchant-tags"></div>
+            </div>
+            <div class="reviews">
+                <h3>用户评价</h3>
+                <div class="review-list" id="review-list">
+                    <!-- 评价将通过JavaScript动态生成 -->
+                </div>
+                <div class="review-form">
+                    <h4>写评价</h4>
+                    <form id="review-form">
+                        <div class="form-group">
+                            <label>评分</label>
+                            <div class="rating-stars">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>评价内容</label>
+                            <textarea name="content" required></textarea>
+                        </div>
+                        <button type="submit">提交评价</button>
+                    </form>
+                </div>
+            </div>
+            <button class="close-btn">关闭</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .visualization-section {
+        grid-column: 1 / -1;
+    }
+}
+
+.visualization-section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.visualization-section h2 {
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+
+.sorting-container {
+    height: 300px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.bars-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    width: 100%;
+    height: 100%;
+}
+
+.bar {
+    flex: 1;
+    background-color: #3498db;
+    border-radius: 2px 2px 0 0;
+    transition: all 0.3s ease;
+}
+
+.bar.comparing {
+    background-color: #e74c3c;
+    transform: scaleY(1.05);
+}
+
+.bar.swapping {
+    background-color: #f39c12;
+    animation: swap 0.5s ease;
+}
+
+.bar.sorted {
+    background-color: #27ae60;
+}
+
+@keyframes swap {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+#speed {
+    width: 150px;
+}
+
+.explanation-section,
+.code-section,
+.analysis-section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.explanation-section h2,
+.code-section h2,
+.analysis-section h2 {
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+
+.step {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #4CAF50;
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    background-color: #e8f5e8;
+    transform: translateX(5px);
+}
+
+.step h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.code-section pre {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 4px;
+    overflow-x: auto;
+    border-left: 4px solid #3498db;
+}
+
+.code-section code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.analysis-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.analysis-item h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.analysis-item ul {
+    list-style-position: inside;
+    margin-left: 10px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    border-radius: 8px;
+}
+
+@media (max-width: 767px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .speed-control {
+        margin-left: 0;
+        justify-content: center;
+    }
+    
+    .sorting-container {
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .visualization-section,
+    .explanation-section,
+    .code-section,
+    .analysis-section {
+        padding: 20px;
+    }
+    
+    .sorting-container {
+        height: 150px;
+    }
+}

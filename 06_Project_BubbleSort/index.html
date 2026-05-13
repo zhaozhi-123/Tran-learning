@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冒泡排序可视化</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>冒泡排序可视化</h1>
+            <p>通过动画直观理解冒泡排序算法的工作原理</p>
+        </header>
+        
+        <main>
+            <section class="visualization-section">
+                <h2>排序过程可视化</h2>
+                <div class="sorting-container">
+                    <div class="bars-container" id="bars-container"></div>
+                </div>
+                <div class="controls">
+                    <button id="start-btn">开始排序</button>
+                    <button id="reset-btn">重置</button>
+                    <button id="generate-btn">生成新数组</button>
+                    <div class="speed-control">
+                        <label for="speed">速度:</label>
+                        <input type="range" id="speed" min="50" max="1000" value="300">
+                    </div>
+                </div>
+            </section>
+            
+            <section class="explanation-section">
+                <h2>冒泡排序原理</h2>
+                <div class="explanation-content">
+                    <div class="step" id="step-1">
+                        <h3>步骤 1: 比较相邻元素</h3>
+                        <p>从数组的第一个元素开始，依次比较相邻的两个元素。</p>
+                    </div>
+                    <div class="step" id="step-2">
+                        <h3>步骤 2: 交换元素</h3>
+                        <p>如果前一个元素大于后一个元素，则交换它们的位置。</p>
+                    </div>
+                    <div class="step" id="step-3">
+                        <h3>步骤 3: 重复过程</h3>
+                        <p>对每一对相邻元素执行相同的操作，直到到达数组末尾。这样，最大的元素会"冒泡"到数组的末尾。</p>
+                    </div>
+                    <div class="step" id="step-4">
+                        <h3>步骤 4: 缩小范围</h3>
+                        <p>针对所有元素重复以上步骤，除了最后一个已经排好序的元素。</p>
+                    </div>
+                    <div class="step" id="step-5">
+                        <h3>步骤 5: 完成排序</h3>
+                        <p>当没有任何一对数字需要交换时，排序完成。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="code-section">
+                <h2>冒泡排序代码</h2>
+                <pre><code>function bubbleSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        // 标记是否发生交换
+        let swapped = false;
+        for (let j = 0; j < n - i - 1; j++) {
+            // 比较相邻元素
+            if (arr[j] > arr[j + 1]) {
+                // 交换元素
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
+        }
+        // 如果没有发生交换，说明数组已经有序
+        if (!swapped) break;
+    }
+    return arr;
+}</code></pre>
+            </section>
+            
+            <section class="analysis-section">
+                <h2>算法分析</h2>
+                <div class="analysis-content">
+                    <div class="analysis-item">
+                        <h3>时间复杂度</h3>
+                        <ul>
+                            <li>最好情况: O(n) - 当数组已经有序时</li>
+                            <li>平均情况: O(n²)</li>
+                            <li>最坏情况: O(n²) - 当数组逆序时</li>
+                        </ul>
+                    </div>
+                    <div class="analysis-item">
+                        <h3>空间复杂度</h3>
+                        <p>O(1) - 只需要常数级的额外空间</p>
+                    </div>
+                    <div class="analysis-item">
+                        <h3>稳定性</h3>
+                        <p>稳定 - 相同值的元素在排序后相对位置不变</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>冒泡排序可视化演示 | 算法学习工具</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
